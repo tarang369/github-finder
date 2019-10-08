@@ -2,6 +2,7 @@ import React, { Fragment, Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Navbar from "./components/layouts/Navbar";
 import Users from "./components/users/Users";
+import User from "./components/users/User";
 import Search from "./components/users/Search";
 import Alert from "./components/layouts/Alert";
 import About from "./components/pages/About";
@@ -22,6 +23,8 @@ class App extends Component {
   //   );
   //   this.setState({ users: res.data, loading: false });
   // }
+
+  //search github users
   searchUsers = async text => {
     this.setState({ loading: true });
     const res = await axios.get(
@@ -37,16 +40,18 @@ class App extends Component {
     );
     this.setState({ user: res.data, loading: false });
   };
+  //clear users
   clearUsers = () => {
     this.setState({ users: [], loading: false });
   };
+  //set alert
   setAlert = (msg, type) => {
     this.setState({ alert: { msg, type } });
     setTimeout(() => this.setState({ alert: null }), 2000);
   };
 
   render() {
-    const { loading, users } = this.state;
+    const { loading,user, users } = this.state;
     return (
       <Router>
         <div className="App">
@@ -70,7 +75,9 @@ class App extends Component {
                 )}
               />
               <Route exact path="/about" component={About} />
-            </Switch>
+              <Route exact path="/user/:login" render={props => (
+              <User {...props} getUser={this.getUser} user={user} loading={loading} /> )} />
+              </Switch>
           </div>
         </div>
       </Router>
@@ -78,4 +85,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App
